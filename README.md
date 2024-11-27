@@ -45,7 +45,7 @@ This project demonstrates how to manage the lifecycle of a machine learning proj
 dvc stage add -n preprocess \
     -p preprocess.input,preprocess.output \
     -d src/preprocess.py -d data/raw/data.csv \
-    -o data/processed/data.csv \
+    -o data/preprocessed/data.csv \
     python src/preprocess.py
 	
 	
