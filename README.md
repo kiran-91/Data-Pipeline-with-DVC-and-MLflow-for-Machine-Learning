@@ -34,7 +34,7 @@ This project demonstrates how to build a complete machine learning pipeline usin
 
 2. **Training:**
    - Script: `train.py`
-   - Task: Trains a **Random Forest Classifier** on the preprocessed data. The trained model is saved as `models/random_forest.pkl`.
+   - Task: Trains a **Random Forest Classifier** on the preprocessed data. The trained model is saved as `models/model.pkl`.
    - Benefit: Hyperparameters and model artifacts are logged to MLflow for easy tracking and reproducibility.
 
 3. **Evaluation:**
