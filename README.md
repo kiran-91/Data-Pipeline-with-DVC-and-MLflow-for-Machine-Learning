@@ -1,12 +1,130 @@
 
-# End-to-End Machine Learning Pipeline with DVC, MLflow, and DagsHub: A Random Forest Case Study
-### Project: Data Pipeline with DVC and MLflow for Machine Learning
+# Diabetes Risk Assessment: An end-to-end Machine Learning Pipeline with DVC and MLflow
+### Project Overview
+This project is an end-to-end machine learning pipeline designed to predict the likelihood of diabetes in patients using the Pima Indians Diabetes Dataset. The pipeline includes data preprocessing, model training, evaluation, and logging of experiments using MLflow. The project is built with DVC (Data Version Control) for managing data and pipeline stages, ensuring reproducibility and scalability.
 
-This project demonstrates how to build a complete machine learning pipeline using **DVC (Data Version Control)** for managing data and model versions, and **MLflow** for tracking experiments. The pipeline involves training a **Random Forest Classifier** on the **Pima Indians Diabetes Dataset** and is designed to ensure reproducibility, organization, and efficient collaboration.
+The goal of this project is to demonstrate how to build a robust and reproducible machine learning workflow using modern tools like DVC, MLflow, and scikit-learn. The pipeline is modular, allowing for easy updates to the dataset, model, or evaluation metrics.
 
 ---
 
-### Key Features
+## 📂Project Structure
+``` bash
+MLpipeline/
+├── data/
+│   ├── raw/                  # Raw dataset files
+│   │   └── data.csv          # Original dataset 
+│   └── processed/            # Processed dataset files
+│       └── data.csv          # Cleaned and preprocessed dataset
+│
+├── models/                   # Trained model files
+│   └── model.pkl             # Trained model saved as pickle file
+│
+├── src/                      # Source code for the pipeline
+│   ├── __init__.py           # Python package initialization
+│   ├── preprocess.py         # Script for data preprocessing
+│   ├── train.py              # Script for model training
+│   └── evaluate.py           # Script for model evaluation
+│
+├── params.yaml               # Configuration file for pipeline parameters
+├── requirements.txt          # Python dependencies for the project
+├── dvc.yaml                  # DVC pipeline configuration file
+├── README.md                 # Project documentation
+├── .gitignore                # Files and directories to ignore in Git
+└── .dvcignore                # Files and directories which DVC ignores 
+```
+---
+## Key Features
+1. Data Preprocessing:
+   - Handling missing values, renaming columns and prepare the dataset for `training`
+   - Saves the cleaned dataset in the `data/preprocesses/` directory
+2. Model Training:
+   - Trains a Random Forest Classifier using hyperparameter tuning
+   - Logs training metrics (e.g., accuracy, precision,recall) using MLFlow
+3. Model Evaluation:
+   - Evaluates the trained model on the test set and logs performance metrics
+   - Saves the trained model as serialized file `model.pkl` in the `models/` directory
+4. Reproducibility
+   - Uses **DVC** to manage data and pipeline stages, ensuring reproducibility and scalability
+   - Ensures that the pipeline can be rerun with the same results
+5. Experiment tracking:
+   - Uses **MLFlow** to track experiments, logs, parameters and visualize metrics.
+
+---
+
+## Pipeline Stages
+The pipeline consists of the following stages, defined in the `dvc.yaml` file:
+1. Preprocessing:
+   - Cleans the raw dataset and saves it to the `data/preprocessed/` directory
+   - Handles missing values and renames columns for consistencey 
+
+2. Training:
+   - Trains a Random Forest Classifier using preprocessed dataset
+   - Logs the hyperparameters and metrics using MLFlow
+
+3. Evaluation:
+   - Evaluates the trained model on the test set
+   - Logs the performance metrics (e.g., accuracy, F1Score) using MLFlow
+
+4. Pipeline Execution:
+   - The pipeline is executed using **DVC**, which ensures reproducibility and tracks dependencies between stages
+
+---
+
+## Installation 
+1. Clone the repository 
+``` bash 
+   git clone https://dagshub.com/kiran-91/MLpipeline.git
+   cd MLpipeline
+   ```
+2. Install the required packages using pip
+``` bash
+   pip install -r requirements.txt
+```
+3. Run the Pipeline
+``` bash 
+   dvc repro
+```
+4. View the results in MLFLow
+``` bash
+   mlflow ui
+```
+---
+### For Adding Stages
+```bash
+   dvc stage add -n preprocess \
+   -p preprocess.input,preprocess.output \
+   -d src/preprocess.py -d data/raw/data.csv \
+   -o data/preprocessed/data.csv \
+   python src/preprocess.py
+```
+	
+``` bash	
+   dvc stage add -n train \
+   -p train.data,train.model,train.random_state,train.n_estimators,train.max_depth \
+   -d src/train.py -d data/raw/data.csv \
+   -o models/model.pkl \
+   python src/train.py
+```
+	
+ ``` bash  
+   dvc stage add -n evaluate \
+   -d src/evaluate.py -d models/model.pkl -d data/raw/data.csv \
+   python src/evaluate.py
+```
+---
+## Results
+For real-time project tracking, please refer to this DagsHub link, where DVC and MLFlow are monitoring progress. You can view live updates and changes in the MLFlow dashboard
+
+👉 **[MLFlow tracking](https://dagshub.com/kiran-91/MLpipeline)**
+
+- Click on the above `link`
+- Click on the `Experiments` tab
+- Checkout the `Go to MLFlow UI` button to view the MLFlow dashboard
+- You can view the experiment logs, model artifacts, and performance metrics in the MLFlow dashboard.
+
+---
+
+### Key Topics
 
 #### Data Version Control (DVC)
 - **What is DVC?**
@@ -42,36 +160,9 @@ This project demonstrates how to build a complete machine learning pipeline usin
    - Task: Loads the trained model, evaluates its performance on the dataset, and logs metrics (e.g., accuracy) to MLflow.
    - Benefit: Facilitates easy comparison of different models and experiments.
 
-### For Adding Stages
-
-dvc stage add -n preprocess \
--    -p preprocess.input,preprocess.output \
--    -d src/preprocess.py -d data/raw/data.csv \
--    -o data/preprocessed/data.csv \
--    python src/preprocess.py
-	
-	
-dvc stage add -n train \
--    -p train.data,train.model,train.random_state,train.n_estimators,train.max_depth \
--    -d src/train.py -d data/raw/data.csv \
--    -o models/model.pkl \
--    python src/train.py
-	
-dvc stage add -n evaluate \
--    -d src/evaluate.py -d models/model.pkl -d data/raw/data.csv \
--    python src/evaluate.py
-
 ---
 
-## Results
-For real-time project tracking, please refer to this DagsHub link, where DVC and MLFlow are monitoring progress. You can view live updates and changes in the MLFlow dashboard
 
-👉 **[MLFlow tracking](https://dagshub.com/kiran-91/MLpipeline)**
-
-- Click on the above `link`
-- Click on the `Experiments` tab
-- Checkout the `Go to MLFlow UI` button to view the MLFlow dashboard
-- You can view the experiment logs, model artifacts, and performance metrics in the MLFlow dashboard.
 ### Additional Concepts
 
 #### What is Git?
